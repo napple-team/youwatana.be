@@ -1,24 +1,41 @@
-# README
+# API Server
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Setup
 
-Things you may want to cover:
+### データベースを立ち上げる
 
-* Ruby version
+データベースなどのミドルウェア群のみが Docker 上で実行される。
 
-* System dependencies
+```sh
+docker-compose up -d database
+```
 
-* Configuration
+### .env ファイルを用意する
 
-* Database creation
+環境変数を設定する .env ファイルをコピーする。ミドルウェア(データベース)を Docker で実行していれば、それぞれコピーするだけで動くようになる。
 
-* Database initialization
+```sh
+# for RAILS_ENV=test
+cp dot.env.test .env.test
 
-* How to run the test suite
+# for RAILS_ENV=development
+cp dot.env.development .env.development
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+### Install Gems
 
-* Deployment instructions
+```sh
+bundle install
+```
 
-* ...
+### マイグレーションを実行する
+
+以下のコマンドを実行して特にエラーがでないことを確認する。
+
+```sh
+# for RAILS_ENV=test
+bundle exec rake db:create db:migrate RAILS_ENV=test
+
+# for RAILS_ENV=development
+bundle exec rake db:create db:migrate
+```

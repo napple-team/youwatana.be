@@ -1,12 +1,9 @@
 default: &default
-  adapter: mysql2
   encoding: utf8mb4
+  charset: utf8mb4
   collation: utf8mb4_general_ci
-  pool: 5
-  username: root
-  password:
   url: <%= ENV['DATABASE_URL'] %>
-  database: youchan_<%= ENV['RAILS_ENV'] %>
 
-<%= ENV['RAILS_ENV'] %>:
+<%= Rails.env %>:
   <<: *default
+  database: youwatanabe_<%= Rails.env %>
