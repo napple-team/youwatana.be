@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  api_server:
+    image: api_server
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - :/usr/app/src/.bundle
+      - /dev/null:/usr/app/src/.env.test
+      - /dev/null:/usr/app/src/.env.development
