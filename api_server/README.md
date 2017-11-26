@@ -22,6 +22,12 @@ cp dot.env.test .env.test
 cp dot.env.development .env.development
 ```
 
+### Install Gems
+
+```sh
+bundle install
+```
+
 ### マイグレーションを実行する
 
 以下のコマンドを実行して特にエラーがでないことを確認する。
