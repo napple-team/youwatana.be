@@ -1,4 +1,4 @@
-FROM ruby:2.4
+FROM ruby:2.6
 
 ENV APP_DIR /usr/src/app
 
