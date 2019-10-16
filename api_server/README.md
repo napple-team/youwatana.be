@@ -2,12 +2,10 @@
 
 ## Setup
 
-### データベースを立ち上げる
-
-データベースなどのミドルウェア群のみが Docker 上で実行される。
+### Docker イメージのビルド
 
 ```sh
-docker-compose up -d database
+docker-compose build
 ```
 
 ### .env ファイルを用意する
@@ -15,17 +13,7 @@ docker-compose up -d database
 環境変数を設定する .env ファイルをコピーする。ミドルウェア(データベース)を Docker で実行していれば、それぞれコピーするだけで動くようになる。
 
 ```sh
-# for RAILS_ENV=test
-cp dot.env.test .env.test
-
-# for RAILS_ENV=development
-cp dot.env.development .env.development
-```
-
-### Install Gems
-
-```sh
-bundle install
+cp .env.sample .env
 ```
 
 ### マイグレーションを実行する
@@ -33,9 +21,20 @@ bundle install
 以下のコマンドを実行して特にエラーがでないことを確認する。
 
 ```sh
-# for RAILS_ENV=test
-bundle exec rake db:create db:migrate RAILS_ENV=test
+docker-compsoe run --rm api_server bundle exec rake db:create db:migrate
+```
 
-# for RAILS_ENV=development
-bundle exec rake db:create db:migrate
+### Docker コンテナの立ち上げ
+
+```sh
+docker-compose up -d
+```
+
+### 開発環境用にVoluemマウントする
+
+`docker-compose.override.sample.yml` というファイルを用意しているので、これを `docker-compose.override.yml` にリネームすることで、ホストのディレクトリをマウントすることができる。
+
+```sh
+cp docker-compose.override.sample.yml docker-compose.override.yml
+docker-compose up -d
 ```

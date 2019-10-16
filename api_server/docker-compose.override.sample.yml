@@ -1,0 +1,10 @@
+version: '3'
+
+volumes:
+  api_database: {}
+
+services:
+  api_server:
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/.bundle

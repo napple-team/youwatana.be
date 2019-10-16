@@ -4,12 +4,18 @@ volumes:
   api_database: {}
 
 services:
+  api_server:
+    image: api_server
+    build: .
+    env_file: .env
+    ports:
+      - 3000:3000
   database:
     image: mysql:5.7
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - api_database:/data
+      - api_database:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 13306:3306
