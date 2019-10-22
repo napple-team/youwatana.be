@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  api_server:
+    volumes:
+      - ./api_server:/usr/src/app
+      - /usr/src/app/.bundle
+  frontend:
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
