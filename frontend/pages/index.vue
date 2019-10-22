@@ -2,8 +2,8 @@
   <div class="container">
     <div class="row">
       <div class="col text-center py-5">
-        <h1>{{ count }}</h1>
-        <button class="btn btn-primary" @click=handleClick>(*&gt; ᴗ &bullet;*)ゞ</button>
+        <div class="display-2">{{ totalCount }}</div>
+        <button class="btn btn-outline-primary btn-lg" @click=handleClick>(*&gt; &#7447; &bull;*)ゞ</button>
       </div>
     </div>
   </div>
@@ -14,7 +14,7 @@ import cable from 'actioncable'
 
 export default {
   computed: {
-    count () {
+    totalCount () {
       return this.$store.state.count;
     }
   },
@@ -23,9 +23,7 @@ export default {
 
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
       received: (data) => {
-        console.log(data);
         this.$store.commit('setCount', data['count']);
-        console.log(this.$store.state.count);
       }
     })
   },
@@ -40,4 +38,7 @@ export default {
 </script>
 
 <style>
+.kaomoji {
+  font-family: -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, '游ゴシック', YuGothic, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, sans-serif;
+}
 </style>
