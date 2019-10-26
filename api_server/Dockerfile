@@ -1,6 +1,7 @@
 FROM ruby:2.6
 
-ENV APP_DIR /usr/src/app
+ENV APP_DIR=/usr/src/app \
+  STDOUT_SYNC=true
 
 WORKDIR $APP_DIR
 
