@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import actioncable from 'actioncable'
 import { TweenLite } from 'gsap/TweenLite'
 
@@ -25,14 +26,17 @@ export default {
   data() {
     return {
       disconnected: true,
+      identifier: null,
       count: 0,
       tweenedNumber: 0,
     }
   },
-  created() {
+  async created() {
+    this.getIdentifier()
     const channel = actioncable.createConsumer('ws://localhost:13000/cable')
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
       connected: () => { this.disconnected = false },
+      received: (data) => this.receivedCount(data),
       rejected: () => { this.disconnected = true },
       disconnected: (data) => { this.disconnected = true },
     })
@@ -47,11 +51,22 @@ export default {
   },
   methods: {
     handleClick: function() {
-        this.counterChannel.perform('increment', {
-        count: 1,
-        })
+      this.counterChannel.perform('increment', {
+        count: 1, identifer: this.identifer
+      })
+    },
+    receivedCount: function(data) {
+      this.count = data['count']
+    },
+    getIdentifer: async function() {
+      try {
+        const response = await axios.get('http://localhost:13000/generate_identifer')
+        this.identifer = response.data.identifer
+      } catch (err) {
+        console.error(err)
       }
     },
+  },
   watch: {
     count: function(newValue, oldValue){
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
