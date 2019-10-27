@@ -28,7 +28,9 @@ export default {
       disconnected: true,
       identifier: null,
       count: 0,
+      temporaryCount: 0,
       tweenedNumber: 0,
+      intervalObject: null,
     }
   },
   async created() {
@@ -40,27 +42,42 @@ export default {
       rejected: () => { this.disconnected = true },
       disconnected: (data) => { this.disconnected = true },
     })
+
+    this.intervalObject = setInterval(this.sendTemporaryCount, 1000)
   },
   beforeDestroy() {
     this.counterChannel.unsubscribe()
+    clearInterval(this.intervalObject)
   },
   computed: {
     animatedCounter: function() {
       return this.tweenedNumber.toFixed(0)
+    },
+    localCount: function() {
+      return this.count + this.temporaryCount
     }
   },
   methods: {
     handleClick: function() {
-      this.counterChannel.perform('increment', {
-        count: 1, identifer: this.identifer
-      })
+      this.temporaryCount++
+    },
+    sendTemporaryCount: function() {
+      if (this.temporaryCount > 0) {
+        this.counterChannel.perform('increment', {
+          count: this.temporaryCount, identifer: this.identifer
+        })
+      }
     },
     receivedCount: function(data) {
       this.count = data['count']
+
+      if (this.identifier == data['identifier']) {
+        this.temporaryCount = 0
+      }
     },
-    getIdentifer: async function() {
+    getIdentifier: async function() {
       try {
-        const response = await axios.get('http://localhost:13000/generate_identifer')
+        const response = await axios.get('http://localhost:13000/generate_identifier')
         this.identifer = response.data.identifer
       } catch (err) {
         console.error(err)
@@ -68,7 +85,7 @@ export default {
     },
   },
   watch: {
-    count: function(newValue, oldValue){
+    localCount: function(newValue) {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }
