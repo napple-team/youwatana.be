@@ -30,17 +30,16 @@ export default {
       count: 0,
       temporaryCount: 0,
       tweenedNumber: 0,
-      intervalObject: null,
     }
   },
   async created() {
     this.getIdentifier()
     const channel = actioncable.createConsumer('ws://localhost:13000/cable')
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
-      connected: () => { this.disconnected = false },
-      received: (data) => this.receivedCount(data),
-      rejected: () => { this.disconnected = true },
-      disconnected: (data) => { this.disconnected = true },
+      connected: () => { this.$data.disconnected = false },
+      received: (receivedData) => this.receivedCount(receivedData),
+      rejected: () => { this.$data.disconnected = true },
+      disconnected: (data) => { this.$data.disconnected = true },
     })
 
     this.intervalObject = setInterval(this.sendTemporaryCount, 1000)
@@ -50,35 +49,35 @@ export default {
     clearInterval(this.intervalObject)
   },
   computed: {
-    animatedCounter: function() {
-      return this.tweenedNumber.toFixed(0)
+    animatedCounter() {
+      return this.$data.tweenedNumber.toFixed(0)
     },
-    localCount: function() {
-      return this.count + this.temporaryCount
+    localCount() {
+      return this.$data.count + this.$data.temporaryCount
     }
   },
   methods: {
-    handleClick: function() {
-      this.temporaryCount++
+    handleClick() {
+      this.$data.temporaryCount++
     },
-    sendTemporaryCount: function() {
-      if (this.temporaryCount > 0) {
+    sendTemporaryCount() {
+      if (this.$data.temporaryCount > 0) {
         this.counterChannel.perform('increment', {
-          count: this.temporaryCount, identifer: this.identifer
+          count: this.$data.temporaryCount, identifier: this.$data.identifier
         })
       }
     },
-    receivedCount: function(data) {
-      this.count = data['count']
+    receivedCount(receivedData) {
+      this.$data.count = receivedData['count']
 
-      if (this.identifier == data['identifier']) {
-        this.temporaryCount = 0
+      if (this.$data.identifier == receivedData['from']) {
+        this.$data.temporaryCount = 0
       }
     },
-    getIdentifier: async function() {
+    async getIdentifier() {
       try {
         const response = await axios.get('http://localhost:13000/generate_identifier')
-        this.identifer = response.data.identifer
+        this.$data.identifier = response.data.identifier
       } catch (err) {
         console.error(err)
       }
@@ -91,4 +90,3 @@ export default {
   }
 }
 </script>
-
