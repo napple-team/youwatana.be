@@ -1,6 +1,6 @@
 class CounterChannel < ApplicationCable::Channel
   def subscribed
-    stream_from('default')
+    stream_for('default')
     transmit(count: Counter.count)
   end
 
@@ -10,6 +10,6 @@ class CounterChannel < ApplicationCable::Channel
 
   def increment(data)
     value = Counter.increment(data["count"])
-    ActionCable.server.broadcast('default', count: value)
+    self.class.broadcast_to('default', count: value)
   end
 end
