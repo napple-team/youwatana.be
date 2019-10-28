@@ -10,9 +10,10 @@
     </template>
     <template v-else>
       <div class="display-3">{{ animatedCounter }}</div>
-      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click=handleClick>
+      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click="handleClick">
         (*&gt; &#7447; &bull;*)ゞ
       </button>
+      <Yosoro ref="player"/>
     </template>
   </div>
 </template>
@@ -21,8 +22,12 @@
 import axios from 'axios'
 import actioncable from 'actioncable'
 import { TweenLite } from 'gsap/TweenLite'
+import Yosoro from '~/components/yosoro'
 
 export default {
+  components: {
+    Yosoro
+  },
   data() {
     return {
       disconnected: true,
@@ -59,6 +64,7 @@ export default {
   methods: {
     handleClick() {
       this.$data.temporaryCount++
+      this.$refs.player.play()
     },
     sendTemporaryCount() {
       if (this.$data.temporaryCount > 0) {
