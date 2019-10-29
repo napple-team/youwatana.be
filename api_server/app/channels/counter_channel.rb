@@ -9,7 +9,8 @@ class CounterChannel < ApplicationCable::Channel
   end
 
   def increment(data)
-    value = Counter.increment(data['count'])
-    self.class.broadcast_to('default', from: data['identifier'], count: value)
+    Counter.lock! do
+      Counter.increment(data['identifier'], data['count'])
+    end
   end
 end
