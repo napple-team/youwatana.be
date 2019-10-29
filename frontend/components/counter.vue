@@ -1,47 +1,92 @@
 <template>
   <div class="text-center py-5">
-    <p class="display-3">{{ animatedCounter }}</p>
-    <button class="btn btn-outline-primary btn-lg" id="button-yosoro" @click=handleClick>(*&gt; &#7447; &bull;*)ゞ</button>
+    <template v-if=disconnected>
+      <div class="display-3">Loading...</div>
+      <button class="btn btn-outline-primary btn-lg my-3 px-5" disabled>
+        <span class="spinner-border" role="status" aria-hidden="true">
+          <span class="sr-only">Loading...</span>
+        </span>
+      </button>
+    </template>
+    <template v-else>
+      <div class="display-3">{{ animatedCounter }}</div>
+      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click=handleClick>
+        (*&gt; &#7447; &bull;*)ゞ
+      </button>
+    </template>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import actioncable from 'actioncable'
 import { TweenLite } from 'gsap/TweenLite'
 
 export default {
   data() {
     return {
+      disconnected: true,
+      identifier: null,
       count: 0,
+      temporaryCount: 0,
       tweenedNumber: 0,
     }
   },
-  created() {
+  async created() {
+    this.getIdentifier()
     const channel = actioncable.createConsumer('ws://localhost:13000/cable')
-
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
-      received: (data) => {
-        this.count = data['count']
-      }
+      connected: () => { this.$data.disconnected = false },
+      received: (receivedData) => this.receivedCount(receivedData),
+      rejected: () => { this.$data.disconnected = true },
+      disconnected: (data) => { this.$data.disconnected = true },
     })
+
+    this.intervalObject = setInterval(this.sendTemporaryCount, 1000)
+  },
+  beforeDestroy() {
+    this.counterChannel.unsubscribe()
+    clearInterval(this.intervalObject)
   },
   computed: {
-    animatedCounter: function() {
-      return this.tweenedNumber.toFixed(0)
+    animatedCounter() {
+      return this.$data.tweenedNumber.toFixed(0)
+    },
+    localCount() {
+      return this.$data.count + this.$data.temporaryCount
     }
   },
   methods: {
-    handleClick: function() {
-      this.counterChannel.perform('increment', {
-        count: 1,
-      })
-    }
+    handleClick() {
+      this.$data.temporaryCount++
+    },
+    sendTemporaryCount() {
+      if (this.$data.temporaryCount > 0) {
+        this.counterChannel.perform('increment', {
+          count: this.$data.temporaryCount, identifier: this.$data.identifier
+        })
+      }
+    },
+    receivedCount(receivedData) {
+      this.$data.count = receivedData['count']
+
+      if (this.$data.identifier == receivedData['from']) {
+        this.$data.temporaryCount = 0
+      }
+    },
+    async getIdentifier() {
+      try {
+        const response = await axios.get('http://localhost:13000/generate_identifier')
+        this.$data.identifier = response.data.identifier
+      } catch (err) {
+        console.error(err)
+      }
+    },
   },
   watch: {
-    count: function(newValue, oldValue){
+    localCount: function(newValue) {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }
 }
 </script>
-
