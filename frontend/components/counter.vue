@@ -83,11 +83,10 @@ export default {
       }
     },
     receivedCount(receivedData) {
-      const countDiff = receivedData['count'] - this.$data.count.serverCount
       this.$data.count.serverCount = receivedData['count']
 
-      if (this.$data.identifier === receivedData['from']) {
-        this.$data.count.serverSentCount -= countDiff
+      if ('buffer' in receivedData && this.$data.identifier in receivedData['buffer']) {
+        this.$data.count.serverSentCount -= receivedData['buffer'][this.$data.identifier]
       }
     },
     async getIdentifier() {
