@@ -13,7 +13,7 @@
       <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click="handleClick">
         (*&gt; &#7447; &bull;*)ゞ
       </button>
-      <Yosoro ref="player"/>
+      <Yosoro ref="soundPlayer" />
     </template>
   </div>
 </template>
@@ -64,7 +64,7 @@ export default {
   methods: {
     handleClick() {
       this.$data.temporaryCount++
-      this.$refs.player.play()
+      this.$refs.soundPlayer.playSound()
     },
     sendTemporaryCount() {
       if (this.$data.temporaryCount > 0) {
@@ -90,7 +90,7 @@ export default {
     },
   },
   watch: {
-    localCount: function(newValue) {
+    localCount(newValue) {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }
