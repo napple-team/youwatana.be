@@ -1,9 +1,7 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <Counter />
-      </div>
+  <div class="row">
+    <div class="col">
+      <Counter />
     </div>
   </div>
 </template>
@@ -17,9 +15,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.kaomoji {
-  font-family: -apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, '游ゴシック', YuGothic, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, sans-serif;
-}
-</style>

@@ -10,9 +10,10 @@
     </template>
     <template v-else>
       <div class="display-3">{{ animatedCounter }}</div>
-      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click=handleClick>
+      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" :disabled="playerNotReady" @click="handleClick">
         (*&gt; &#7447; &bull;*)ゞ
       </button>
+      <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
     </template>
   </div>
 </template>
@@ -21,8 +22,12 @@
 import axios from 'axios'
 import actioncable from 'actioncable'
 import { TweenLite } from 'gsap/TweenLite'
+import Yosoro from '~/components/yosoro'
 
 export default {
+  components: {
+    Yosoro
+  },
   data() {
     return {
       disconnected: true,
@@ -30,6 +35,7 @@ export default {
       count: 0,
       temporaryCount: 0,
       tweenedNumber: 0,
+      playerNotReady: true,
     }
   },
   async created() {
@@ -59,6 +65,7 @@ export default {
   methods: {
     handleClick() {
       this.$data.temporaryCount++
+      this.$refs.soundPlayer.playSound()
     },
     sendTemporaryCount() {
       if (this.$data.temporaryCount > 0) {
@@ -82,9 +89,12 @@ export default {
         console.error(err)
       }
     },
+    soundPlayerReady(e) {
+      this.$data.playerNotReady = false
+    }
   },
   watch: {
-    localCount: function(newValue) {
+    localCount(newValue) {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }
