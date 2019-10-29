@@ -42,7 +42,8 @@ export default {
     }
   },
   async created() {
-    this.getIdentifier()
+    await this.getIdentifier()
+
     const channel = actioncable.createConsumer('ws://localhost:13000/cable')
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
       connected: () => { this.$data.disconnected = false },
