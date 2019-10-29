@@ -10,10 +10,10 @@
     </template>
     <template v-else>
       <div class="display-3">{{ animatedCounter }}</div>
-      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" @click="handleClick">
+      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" :disabled="playerNotReady" @click="handleClick">
         (*&gt; &#7447; &bull;*)ゞ
       </button>
-      <Yosoro ref="soundPlayer" />
+      <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
     </template>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
       count: 0,
       temporaryCount: 0,
       tweenedNumber: 0,
+      playerNotReady: true,
     }
   },
   async created() {
@@ -88,6 +89,9 @@ export default {
         console.error(err)
       }
     },
+    soundPlayerReady(e) {
+      this.$data.playerNotReady = false
+    }
   },
   watch: {
     localCount(newValue) {

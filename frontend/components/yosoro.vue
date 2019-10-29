@@ -1,6 +1,6 @@
 <template>
   <div>
-    <youtube ref="yosoroPlayer" :player-vars="playerVars" @ready="playerReady" />
+    <youtube class="yosoro-player" ref="yosoroPlayer" width="0" height="0" :player-vars="playerVars" @ready="playerReady" @playing="playerPlaying" />
     <b-button pill variant="outline-secondary" :pressed.sync="mute">
       <span v-if="mute">🔇</span>
       <span v-else>🔊</span>
@@ -18,8 +18,8 @@ export default {
   },
   data() {
     return {
+      initialized: false,
       playerVars: {
-        autoplay: 1,
         controls: 0,
         disablekb: 0,
         rel: 0,
@@ -50,6 +50,13 @@ export default {
       // 無音で再生してロードさせる
       this.yosoroPlayer.mute()
       this.yosoroPlayer.loadVideoById(this.$data.loadVideoParams)
+    },
+    playerPlaying(target) {
+      // 読み込みが完了（バッファリングが終わって再生できるようになったらreadyイベントを発生させる）
+      if (!this.$data.initialized) {
+        this.$data.initialized = true
+        this.$emit('ready', target)
+      }
     },
     playSound() {
       if (!this.mute) this.yosoroPlayer.unMute()
