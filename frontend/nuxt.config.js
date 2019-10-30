@@ -28,7 +28,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vue-youtube'
+    '~/plugins/vue-youtube',
+    '~/plugins/actioncable',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -41,6 +42,7 @@ module.exports = {
   modules: [
     // Doc: https://bootstrap-vue.js.org
     'bootstrap-vue/nuxt',
+    '@nuxtjs/axios',
   ],
   /*
   ** Build configuration
@@ -51,5 +53,12 @@ module.exports = {
     */
     extend (config, ctx) {
     }
+  },
+  axios: {
+    baseURL: process.env.API_SERVER_ENDPOINT_URL,
+  },
+  env: {
+    webSocketEndpointUrl: process.env.WEB_SOCKET_ENDPOINT_URL,
+    apiServerEndpointUrl: process.env.API_SERVER_ENDPOINT_URL,
   }
 }
