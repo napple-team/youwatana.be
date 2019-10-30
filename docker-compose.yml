@@ -14,6 +14,14 @@ services:
       - 13000:3000
     volumes:
       - ./api_server:/usr/src/app
+  api_server_sidekiq:
+    image: youwatana.be/api_server
+    build:
+      context: ./api_server
+    env_file: ./api_server/.env
+    volumes:
+      - ./api_server:/usr/src/app
+    command: bundle exec sidekiq
   frontend:
     image: youwatana.be/frontend
     build:

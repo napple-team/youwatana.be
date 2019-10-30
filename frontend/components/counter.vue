@@ -31,15 +31,19 @@ export default {
   data() {
     return {
       disconnected: true,
-      identifier: null,
-      count: 0,
-      temporaryCount: 0,
-      tweenedNumber: 0,
       playerNotReady: true,
+      identifier: null,
+      count: {
+        serverCount: 0,
+        notSendCount: 0,
+        serverSentCount: 0,
+      },
+      tweenedNumber: 0,
     }
   },
   async created() {
-    this.getIdentifier()
+    await this.getIdentifier()
+
     const channel = actioncable.createConsumer('ws://localhost:13000/cable')
     this.counterChannel = channel.subscriptions.create('CounterChannel', {
       connected: () => { this.$data.disconnected = false },
@@ -48,7 +52,7 @@ export default {
       disconnected: (data) => { this.$data.disconnected = true },
     })
 
-    this.intervalObject = setInterval(this.sendTemporaryCount, 1000)
+    this.intervalObject = setInterval(this.sendLocalCount, 1000)
   },
   beforeDestroy() {
     this.counterChannel.unsubscribe()
@@ -58,27 +62,32 @@ export default {
     animatedCounter() {
       return this.$data.tweenedNumber.toFixed(0)
     },
+    displayCount() {
+      return this.$data.count.serverCount + this.localCount
+    },
     localCount() {
-      return this.$data.count + this.$data.temporaryCount
+      return this.$data.count.serverSentCount + this.$data.count.notSendCount
     }
   },
   methods: {
     handleClick() {
-      this.$data.temporaryCount++
+      this.$data.count.notSendCount++
       this.$refs.soundPlayer.playSound()
     },
-    sendTemporaryCount() {
-      if (this.$data.temporaryCount > 0) {
+    sendLocalCount() {
+      if (this.$data.count.notSendCount > 0) {
         this.counterChannel.perform('increment', {
-          count: this.$data.temporaryCount, identifier: this.$data.identifier
+          identifier: this.$data.identifier, count: this.$data.count.notSendCount
         })
+        this.$data.count.serverSentCount += this.$data.count.notSendCount
+        this.$data.count.notSendCount = 0
       }
     },
     receivedCount(receivedData) {
-      this.$data.count = receivedData['count']
+      this.$data.count.serverCount = receivedData['count']
 
-      if (this.$data.identifier == receivedData['from']) {
-        this.$data.temporaryCount = 0
+      if ('buffer' in receivedData && this.$data.identifier in receivedData['buffer']) {
+        this.$data.count.serverSentCount -= receivedData['buffer'][this.$data.identifier]
       }
     },
     async getIdentifier() {
@@ -94,7 +103,7 @@ export default {
     }
   },
   watch: {
-    localCount(newValue) {
+    displayCount(newValue) {
       TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }

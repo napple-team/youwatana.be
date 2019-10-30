@@ -1,0 +1,3 @@
+:schedule:
+  CounterBroadcastingJob:
+    every: 3s
