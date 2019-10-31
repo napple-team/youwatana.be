@@ -55,10 +55,10 @@ module.exports = {
     }
   },
   axios: {
-    baseURL: process.env.API_SERVER_ENDPOINT_URL,
+    baseURL: process.env.API_SERVER_BASE_URL,
   },
   env: {
-    webSocketEndpointUrl: process.env.WEB_SOCKET_ENDPOINT_URL,
-    apiServerEndpointUrl: process.env.API_SERVER_ENDPOINT_URL,
+    webSocketEntrypointUrl: process.env.WEB_SOCKET_ENTRYPOINT_URL,
+    apiServerBaseUrl: process.env.API_SERVER_BASE_URL,
   }
 }
