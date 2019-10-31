@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import actioncable from 'actioncable'
 import { TweenLite } from 'gsap/TweenLite'
 import Yosoro from '~/components/yosoro'
@@ -44,8 +43,7 @@ export default {
   async created() {
     await this.getIdentifier()
 
-    const channel = actioncable.createConsumer('ws://localhost:13000/cable')
-    this.counterChannel = channel.subscriptions.create('CounterChannel', {
+    this.counterChannel = this.$cable.subscriptions.create('CounterChannel', {
       connected: () => { this.$data.disconnected = false },
       received: (receivedData) => this.receivedCount(receivedData),
       rejected: () => { this.$data.disconnected = true },
@@ -92,7 +90,7 @@ export default {
     },
     async getIdentifier() {
       try {
-        const response = await axios.get('http://localhost:13000/generate_identifier')
+        const response = await this.$axios.get('/generate_identifier')
         this.$data.identifier = response.data.identifier
       } catch (err) {
         console.error(err)

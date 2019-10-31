@@ -9,21 +9,21 @@ services:
     image: youwatana.be/api_server
     build:
       context: ./api_server
-    env_file: ./api_server/.env
+    env_file: .env
     ports:
       - 13000:3000
     volumes:
       - ./api_server:/usr/src/app
   api_server_sidekiq:
     image: youwatana.be/api_server
-    build:
-      context: ./api_server
-    env_file: ./api_server/.env
+    env_file: .env
     volumes:
       - ./api_server:/usr/src/app
+      - /dev/null:/usr/src/app/log/development.log
     command: bundle exec sidekiq
   frontend:
     image: youwatana.be/frontend
+    env_file: .env
     build:
       context: frontend
     ports:
