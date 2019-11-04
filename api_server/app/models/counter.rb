@@ -20,7 +20,7 @@ class Counter
     end
 
     def buffer
-      counter.buffer.value
+      counter.buffer.value.transform_values(&:to_i)
     end
 
     def reset_buffer!
