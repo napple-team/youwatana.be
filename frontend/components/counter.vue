@@ -17,6 +17,7 @@
         (*&gt; &#7447; &bull;*)ゞ
       </button>
       <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
+      <Balloons ref="balloons" />
     </template>
   </div>
 </template>
@@ -25,10 +26,12 @@
 import actioncable from 'actioncable'
 import gsap from 'gsap'
 import Yosoro from '~/components/yosoro'
+import Balloons from '~/components/balloons'
 
 export default {
   components: {
-    Yosoro
+    Yosoro,
+    Balloons
   },
   data() {
     return {
@@ -97,8 +100,11 @@ export default {
     receivedCount(receivedData) {
       this.count.serverCount = receivedData['count']
 
-      if ('buffer' in receivedData && this.identifier in receivedData['buffer']) {
-        this.count.serverSentCount -= receivedData['buffer'][this.identifier]
+      if ('buffer' in receivedData) {
+        this.$refs.balloons.pushBalloons(receivedData['buffer'])
+        if (this.identifier in receivedData['buffer']) {
+          this.count.serverSentCount -= receivedData['buffer'][this.identifier]
+        }
       }
     },
     async getIdentifier() {
