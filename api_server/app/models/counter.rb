@@ -32,6 +32,10 @@ class Counter
         yield
       end
     end
+
+    def backup_database!
+      Count.update!(count)
+    end
   end
 
   def id

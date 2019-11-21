@@ -10,5 +10,6 @@ class CounterBroadcastingJob < ApplicationJob
       })
       Counter.reset_buffer!
     end
+    Counter.backup_database!
   end
 end
