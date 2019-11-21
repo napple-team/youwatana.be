@@ -11,11 +11,11 @@ class Count < ApplicationRecord
     end
 
     def update!(count)
-      raise NotDecreased if count < value
+      raise NotDecreased if count < total
       counter.update!(total: count)
     end
 
-    def value
+    def total
       counter.total
     end
 
