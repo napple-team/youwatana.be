@@ -20,7 +20,7 @@
 
 <script>
 import actioncable from 'actioncable'
-import { TweenLite } from 'gsap/TweenLite'
+import gsap from 'gsap'
 import Yosoro from '~/components/yosoro'
 
 export default {
@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     displayCount(newValue) {
-      TweenLite.to(this.$data, 0.5, { tweenedNumber: newValue })
+      gsap.to(this.$data, 0.5, { tweenedNumber: newValue })
     },
   }
 }
