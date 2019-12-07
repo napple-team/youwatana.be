@@ -1,5 +1,6 @@
 class CounterChannel < ApplicationCable::Channel
   def subscribed
+    reject unless Identifier.verified?(params['identifier'])
     stream_for('default')
     transmit(count: Counter.count)
   end
@@ -9,6 +10,7 @@ class CounterChannel < ApplicationCable::Channel
   end
 
   def increment(data)
+    reject unless Identifier.verified?(data['identifier'])
     Counter.lock! do
       Counter.increment(data['identifier'], data['count'])
     end

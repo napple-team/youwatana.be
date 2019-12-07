@@ -1,7 +1,10 @@
 <template>
   <div class="text-center py-5">
-    <template v-if=disconnected>
-      <div class="display-3">Loading...</div>
+    <b-alert variant="danger" :show="raiseError">
+      <p class="mb-0">予期せぬエラーが発生しました</p>
+    </b-alert>
+    <template v-if="disconnected">
+      <div class="display-3">Now Loading</div>
       <button class="btn btn-outline-primary btn-lg my-3 px-5" disabled>
         <span class="spinner-border" role="status" aria-hidden="true">
           <span class="sr-only">Loading...</span>
@@ -29,6 +32,8 @@ export default {
   },
   data() {
     return {
+      raiseError: false,
+      counterChannel: null,
       disconnected: true,
       playerNotReady: true,
       identifier: null,
@@ -41,16 +46,24 @@ export default {
     }
   },
   async created() {
-    await this.getIdentifier()
+    try {
+      this.$data.identifier = await this.getIdentifier()
 
-    this.counterChannel = this.$cable.subscriptions.create('CounterChannel', {
-      connected: () => { this.$data.disconnected = false },
-      received: (receivedData) => this.receivedCount(receivedData),
-      rejected: () => { this.$data.disconnected = true },
-      disconnected: (data) => { this.$data.disconnected = true },
-    })
+      this.counterChannel = this.$cable.subscriptions.create(
+        { channel: 'CounterChannel', identifier: this.identifier },
+        {
+          connected: () => { this.$data.disconnected = false },
+          received: (receivedData) => this.receivedCount(receivedData),
+          rejected: () => { this.$data.raiseError = this.$data.disconnected = true },
+          disconnected: (data) => { this.$data.disconnected = true },
+        }
+      )
 
-    this.intervalObject = setInterval(this.sendLocalCount, 1000)
+      this.intervalObject = setInterval(this.sendLocalCount, 1000)
+    } catch(err) {
+      console.error(err)
+      this.raiseError = true
+    }
   },
   beforeDestroy() {
     this.counterChannel.unsubscribe()
@@ -58,46 +71,46 @@ export default {
   },
   computed: {
     animatedCounter() {
-      return this.$data.tweenedNumber.toFixed(0)
+      return this.tweenedNumber.toFixed(0)
     },
     displayCount() {
-      return this.$data.count.serverCount + this.localCount
+      return this.count.serverCount + this.localCount
     },
     localCount() {
-      return this.$data.count.serverSentCount + this.$data.count.notSendCount
+      return this.count.serverSentCount + this.count.notSendCount
     }
   },
   methods: {
     handleClick() {
-      this.$data.count.notSendCount++
+      this.count.notSendCount++
       this.$refs.soundPlayer.playSound()
     },
     sendLocalCount() {
-      if (this.$data.count.notSendCount > 0) {
+      if (this.count.notSendCount > 0) {
         this.counterChannel.perform('increment', {
-          identifier: this.$data.identifier, count: this.$data.count.notSendCount
+          identifier: this.identifier, count: this.count.notSendCount
         })
-        this.$data.count.serverSentCount += this.$data.count.notSendCount
-        this.$data.count.notSendCount = 0
+        this.count.serverSentCount += this.count.notSendCount
+        this.count.notSendCount = 0
       }
     },
     receivedCount(receivedData) {
-      this.$data.count.serverCount = receivedData['count']
+      this.count.serverCount = receivedData['count']
 
-      if ('buffer' in receivedData && this.$data.identifier in receivedData['buffer']) {
-        this.$data.count.serverSentCount -= receivedData['buffer'][this.$data.identifier]
+      if ('buffer' in receivedData && this.identifier in receivedData['buffer']) {
+        this.count.serverSentCount -= receivedData['buffer'][this.identifier]
       }
     },
     async getIdentifier() {
       try {
         const response = await this.$axios.get('/generate_identifier')
-        this.$data.identifier = response.data.identifier
+        return response.data.identifier
       } catch (err) {
         console.error(err)
       }
     },
     soundPlayerReady(e) {
-      this.$data.playerNotReady = false
+      this.playerNotReady = false
     }
   },
   watch: {

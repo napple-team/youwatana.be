@@ -1,5 +1,5 @@
 class GenerateIdentifierController < ApplicationController
   def index
-    render json: { identifier: SecureRandom.alphanumeric(16) }
+    render json: { identifier: Identifier.register }
   end
 end
