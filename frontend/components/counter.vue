@@ -1,7 +1,10 @@
 <template>
   <div class="text-center py-5">
-    <template v-if=disconnected>
-      <div class="display-3">Loading...</div>
+    <b-alert variant="danger" :show="raiseError">
+      <p class="mb-0">予期せぬエラーが発生しました</p>
+    </b-alert>
+    <template v-if="disconnected">
+      <div class="display-3">Now Loading</div>
       <button class="btn btn-outline-primary btn-lg my-3 px-5" disabled>
         <span class="spinner-border" role="status" aria-hidden="true">
           <span class="sr-only">Loading...</span>
@@ -29,6 +32,8 @@ export default {
   },
   data() {
     return {
+      raiseError: false,
+      counterChannel: null,
       disconnected: true,
       playerNotReady: true,
       identifier: null,
@@ -41,16 +46,24 @@ export default {
     }
   },
   async created() {
-    await this.getIdentifier()
+    try {
+      this.$data.identifier = await this.getIdentifier()
 
-    this.counterChannel = this.$cable.subscriptions.create('CounterChannel', {
-      connected: () => { this.$data.disconnected = false },
-      received: (receivedData) => this.receivedCount(receivedData),
-      rejected: () => { this.$data.disconnected = true },
-      disconnected: (data) => { this.$data.disconnected = true },
-    })
+      this.counterChannel = this.$cable.subscriptions.create(
+        { channel: 'CounterChannel', identifier: this.identifier },
+        {
+          connected: () => { this.$data.disconnected = false },
+          received: (receivedData) => this.receivedCount(receivedData),
+          rejected: () => { this.$data.raiseError = this.$data.disconnected = true },
+          disconnected: (data) => { this.$data.disconnected = true },
+        }
+      )
 
-    this.intervalObject = setInterval(this.sendLocalCount, 1000)
+      this.intervalObject = setInterval(this.sendLocalCount, 1000)
+    } catch(err) {
+      console.error(err)
+      this.raiseError = true
+    }
   },
   beforeDestroy() {
     this.counterChannel.unsubscribe()
