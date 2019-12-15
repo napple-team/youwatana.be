@@ -1,7 +1,5 @@
 <template>
-  <div>
-    {{identifier}}: {{count}}
-  </div>
+  <li>+{{count}}</li>
 </template>
 
 <script>
@@ -24,7 +22,7 @@ export default {
     }
   },
   created() {
-    setTimeout(this.animationFinish, 10000)
+    setTimeout(this.animationFinish, 3000)
   },
   methods: {
     animationFinish() {

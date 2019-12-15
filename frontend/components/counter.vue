@@ -12,12 +12,12 @@
       </button>
     </template>
     <template v-else>
-      <div class="display-3">{{ animatedCounter }}</div>
-      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" :disabled="playerNotReady" @click="handleClick">
-        (*&gt; &#7447; &bull;*)ゞ
-      </button>
-      <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
       <Balloons ref="balloons" />
+      <div class="display-3">{{ animatedCounter }}</div>
+      <b-btn variant="primary" block size="lg" class="my-3" id="button-yosoro" :disabled="playerNotReady" @click="handleClick">
+        <span class="sr-only">(*&gt; &#7447; &bull;*)ゞ</span>
+      </b-btn>
+      <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
     </template>
   </div>
 </template>
@@ -124,3 +124,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+#button-yosoro {
+  &::before {
+    content: "全速前進？";
+  }
+  &:hover:not(:disabled)::before {
+    content: "ヨーソロー！";
+  }
+}
+</style>

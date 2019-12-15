@@ -1,9 +1,11 @@
 <template>
-  <div class="row">
-    <div class="col">
-      <Counter />
-    </div>
-  </div>
+  <b-container>
+    <b-row :class="$style.fillHeight" class="justify-content-center align-items-center">
+      <b-col cols="12" lg="3" md="4" sm="8">
+        <Counter />
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -15,3 +17,9 @@ export default {
   }
 }
 </script>
+
+<style module lang="scss">
+.fillHeight {
+  min-height: 100vh;
+}
+</style>
