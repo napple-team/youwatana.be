@@ -12,22 +12,33 @@ export default {
   components: {
     Balloon
   },
+  props: {
+    buffer: {
+      type: Array,
+      default: []
+    }
+  },
   data() {
     return {
       balloons: [],
     }
   },
   methods: {
-    pushBalloons(from) {
-      const time = Date.now();
-      for (let [identifier, count] of Object.entries(from)) {
-        this.balloons.push({
-          key: `${identifier}::${time}`, identifier: identifier, count: count
-        })
-      }
-    },
     shiftBallons(element, key) {
       this.balloons = this.balloons.filter(balloon => balloon.key !== key)
+    }
+  },
+  watch: {
+    buffer(newValue) {
+      const time = newValue['time']
+      for (let [index, [identifier, count]] of Object.entries(Object.entries(newValue['buffer']))) {
+        if (index > 6) retrurn
+        setTimeout(() => {
+          this.balloons.push({
+            key: `${identifier}::${time}`, identifier: identifier, count: count
+          })
+        }, index * 500)
+      }
     }
   }
 }

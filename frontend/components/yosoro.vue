@@ -1,10 +1,17 @@
 <template>
   <div>
     <youtube class="yosoro-player" ref="yosoroPlayer" width="0" height="0" :player-vars="playerVars" @ready="playerReady" @playing="playerPlaying" />
-    <b-button pill variant="outline-secondary" :pressed.sync="mute">
-      <span v-if="mute">🔇</span>
-      <span v-else>🔊</span>
-    </b-button>
+    <template v-if="!initialized">
+      <b-button pill variant="outline-secondary">
+        <b-spinner variaant="primary" type="grow" small />
+      </b-button>
+    </template>
+    <template v-else>
+      <b-button pill variant="outline-secondary" :pressed.sync="mute">
+        <span v-if="mute">🔇</span>
+        <span v-else>🔊</span>
+      </b-button>
+    </template>
   </div>
 </template>
 

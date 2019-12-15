@@ -5,6 +5,7 @@ class CounterBroadcastingJob < ApplicationJob
     return unless Counter.buffer.present?
     Counter.lock! do
       CounterChannel.broadcast_to('default', {
+        time: Time.zone.now.to_i,
         count: Counter.count,
         buffer: Counter.buffer,
       })
