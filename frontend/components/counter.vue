@@ -1,23 +1,40 @@
 <template>
-  <div class="text-center py-5">
-    <b-alert variant="danger" :show="raiseError">
+  <div class="counter">
+    <b-alert variant="danger" :show="raiseError" class="text-center">
       <p class="mb-0">予期せぬエラーが発生しました</p>
     </b-alert>
-    <template v-if="disconnected">
-      <div class="display-3">Now Loading</div>
-      <button class="btn btn-outline-primary btn-lg my-3 px-5" disabled>
-        <span class="spinner-border" role="status" aria-hidden="true">
-          <span class="sr-only">Loading...</span>
-        </span>
-      </button>
-    </template>
-    <template v-else>
-      <div class="display-3">{{ animatedCounter }}</div>
-      <button class="btn btn-outline-primary btn-lg my-3" id="button-yosoro" :disabled="playerNotReady" @click="handleClick">
-        (*&gt; &#7447; &bull;*)ゞ
-      </button>
-      <Yosoro ref="soundPlayer" @ready="soundPlayerReady" />
-    </template>
+    <div class="text-center py-5">
+      <template v-if="disconnected">
+        <div class="d-inline-flex align-items-center">
+          <b-spinner variant="primary" />
+          <span class="ml-3">Now Youding...</span>
+        </div>
+      </template>
+      <template v-else>
+        <b-row>
+          <b-col cols="12">
+            <Balloons ref="balloons" :buffer="counterBuffer" :identifier="identifier" />
+            <div class="yosoro-counter display-3">{{ animatedCounter }}</div>
+          </b-col>
+        </b-row>
+        <b-row class="justify-content-center">
+          <b-col lg="3" md="4" sm="8" cols="12">
+            <b-btn
+              variant="primary"
+              block
+              size="lg"
+              class="yosoro-button my-3"
+              @click="handleClick"
+              @mouseenter="hover = true"
+              @mouseleave="hover = false"
+            >
+              <span class="sr-only">(*&gt; &#7447; &bull;*)ゞ</span>
+            </b-btn>
+          </b-col>
+        </b-row>
+        <Yosoro ref="soundPlayer" class="sound-button" />
+      </template>
+    </div>
   </div>
 </template>
 
@@ -25,17 +42,18 @@
 import actioncable from 'actioncable'
 import gsap from 'gsap'
 import Yosoro from '~/components/yosoro'
+import Balloons from '~/components/balloons'
 
 export default {
   components: {
-    Yosoro
+    Yosoro,
+    Balloons
   },
   data() {
     return {
       raiseError: false,
       counterChannel: null,
       disconnected: true,
-      playerNotReady: true,
       identifier: null,
       count: {
         serverCount: 0,
@@ -43,19 +61,30 @@ export default {
         serverSentCount: 0,
       },
       tweenedNumber: 0,
+      counterBuffer: {
+        time: 0,
+        buffer: []
+      },
+      hover: false,
     }
   },
   async created() {
     try {
-      this.$data.identifier = await this.getIdentifier()
+      this.identifier = await this.getIdentifier()
+      console.log(this.identifier)
+
+      const timeoutId = setTimeout(() => { this.raiseError = true }, 5000)
 
       this.counterChannel = this.$cable.subscriptions.create(
         { channel: 'CounterChannel', identifier: this.identifier },
         {
-          connected: () => { this.$data.disconnected = false },
+          connected: () => {
+            this.disconnected = false
+            clearTimeout(timeoutId)
+          },
           received: (receivedData) => this.receivedCount(receivedData),
-          rejected: () => { this.$data.raiseError = this.$data.disconnected = true },
-          disconnected: (data) => { this.$data.disconnected = true },
+          rejected: () => { this.disconnected = true },
+          disconnected: (data) => { this.disconnected = true },
         }
       )
 
@@ -78,6 +107,9 @@ export default {
     },
     localCount() {
       return this.count.serverSentCount + this.count.notSendCount
+    },
+    youchan() {
+      return this.hover ? '(*> ᴗ •*)ゞ' : '(*• ᴗ •*)'
     }
   },
   methods: {
@@ -97,8 +129,14 @@ export default {
     receivedCount(receivedData) {
       this.count.serverCount = receivedData['count']
 
-      if ('buffer' in receivedData && this.identifier in receivedData['buffer']) {
-        this.count.serverSentCount -= receivedData['buffer'][this.identifier]
+      if ('buffer' in receivedData) {
+        this.counterBuffer = {
+          time: receivedData['time'],
+          buffer: receivedData['buffer']
+        }
+        if (this.identifier in receivedData['buffer']) {
+          this.count.serverSentCount -= receivedData['buffer'][this.identifier]
+        }
       }
     },
     async getIdentifier() {
@@ -108,15 +146,70 @@ export default {
       } catch (err) {
         console.error(err)
       }
-    },
-    soundPlayerReady(e) {
-      this.playerNotReady = false
     }
   },
   watch: {
     displayCount(newValue) {
-      gsap.to(this.$data, 0.5, { tweenedNumber: newValue })
+      gsap.to(this.$data, 0.5, { tweenedNumber: newValue, ease: 'linear' } )
     },
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.counter {
+  width: 100%;
+}
+.yosoro-button {
+  animation: waggle ease 7s 1s infinite;
+  &::before {
+    content: "全速前進？";
+  }
+  &:hover:not(:disabled) {
+    animation: none;
+    &::before {
+      content: "ヨーソロー！";
+    }
+  }
+}
+.yosoro-youchan {
+  font-size: 2rem;
+}
+
+.sound-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+}
+
+@keyframes waggle {
+  0% {
+    transform: none;
+  }
+  12.5% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  15% {
+    transform: rotateZ(5deg) scale(1.05);
+  }
+  16.25% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  17.5% {
+    transform: rotateZ(2deg) scale(1.05);
+  }
+  18.75% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  20% {
+    transform: rotateZ(0) scale(1.05);
+  }
+  25% {
+    transform: rotateZ(0) scale(1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+</style>
