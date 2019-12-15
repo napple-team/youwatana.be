@@ -46,21 +46,19 @@ export default {
         serverSentCount: 0,
       },
       tweenedNumber: 0,
+      counterChannel: null,
     }
   },
   async created() {
     try {
-      this.$data.identifier = await this.getIdentifier()
+      this.identifier = await this.getIdentifier()
 
-      this.counterChannel = this.$cable.subscriptions.create(
-        { channel: 'CounterChannel', identifier: this.identifier },
-        {
-          connected: () => { this.$data.disconnected = false },
-          received: (receivedData) => this.receivedCount(receivedData),
-          rejected: () => { this.$data.raiseError = this.$data.disconnected = true },
-          disconnected: (data) => { this.$data.disconnected = true },
-        }
-      )
+    this.counterChannel = this.$cable.subscriptions.create('CounterChannel', {
+      connected: () => { this.disconnected = false },
+      received: (receivedData) => this.receivedCount(receivedData),
+      rejected: () => { this.disconnected = true },
+      disconnected: (data) => { this.disconnected = true },
+    })
 
       this.intervalObject = setInterval(this.sendLocalCount, 1000)
     } catch(err) {
@@ -110,7 +108,7 @@ export default {
     async getIdentifier() {
       try {
         const response = await this.$axios.get('/generate_identifier')
-        return response.data.identifier
+        this.identifier = response.data.identifier
       } catch (err) {
         console.error(err)
       }

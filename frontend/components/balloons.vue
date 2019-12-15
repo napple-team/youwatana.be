@@ -21,13 +21,13 @@ export default {
     pushBalloons(from) {
       const time = Date.now();
       for (let [identifier, count] of Object.entries(from)) {
-        this.$data.balloons.push({
+        this.balloons.push({
           key: `${identifier}::${time}`, identifier: identifier, count: count
         })
       }
     },
     shiftBallons(element, key) {
-      this.$data.balloons = this.$data.balloons.filter(balloon => balloon.key !== key)
+      this.balloons = this.balloons.filter(balloon => balloon.key !== key)
     }
   }
 }
