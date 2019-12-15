@@ -1,28 +1,40 @@
 <template>
-  <div>
+  <div class="counter">
     <b-alert variant="danger" :show="raiseError" class="text-center">
       <p class="mb-0">予期せぬエラーが発生しました</p>
     </b-alert>
-    <b-row class="justify-content-center">
-      <b-col lg="3" md="4" sm="8" cols="12">
-        <div class="text-center py-5">
-          <template v-if="disconnected">
-            <div class="d-inline-flex align-items-center">
-              <b-spinner variant="primary" />
-              <span class="ml-3">Now Youding...</span>
-            </div>
-          </template>
-          <template v-else>
-            <Balloons ref="balloons" :buffer="counterBuffer" />
-            <div class="display-3">{{ animatedCounter }}</div>
-            <b-btn variant="primary" block size="lg" class="my-3" id="button-yosoro" @click="handleClick">
+    <div class="text-center py-5">
+      <template v-if="disconnected">
+        <div class="d-inline-flex align-items-center">
+          <b-spinner variant="primary" />
+          <span class="ml-3">Now Youding...</span>
+        </div>
+      </template>
+      <template v-else>
+        <b-row>
+          <b-col cols="12">
+            <Balloons ref="balloons" :buffer="counterBuffer" :identifier="identifier" />
+            <div class="yosoro-counter display-3">{{ animatedCounter }}</div>
+          </b-col>
+        </b-row>
+        <b-row class="justify-content-center">
+          <b-col lg="3" md="4" sm="8" cols="12">
+            <b-btn
+              variant="primary"
+              block
+              size="lg"
+              class="yosoro-button my-3"
+              @click="handleClick"
+              @mouseenter="hover = true"
+              @mouseleave="hover = false"
+            >
               <span class="sr-only">(*&gt; &#7447; &bull;*)ゞ</span>
             </b-btn>
-            <Yosoro ref="soundPlayer" @ready="soundPlayerReady" class="sound-button" />
-          </template>
-        </div>
-      </b-col>
-    </b-row>
+          </b-col>
+        </b-row>
+        <Yosoro ref="soundPlayer" class="sound-button" />
+      </template>
+    </div>
   </div>
 </template>
 
@@ -52,7 +64,8 @@ export default {
       counterBuffer: {
         time: 0,
         buffer: []
-      }
+      },
+      hover: false,
     }
   },
   async created() {
@@ -94,6 +107,9 @@ export default {
     },
     localCount() {
       return this.count.serverSentCount + this.count.notSendCount
+    },
+    youchan() {
+      return this.hover ? '(*> ᴗ •*)ゞ' : '(*• ᴗ •*)'
     }
   },
   methods: {
@@ -141,17 +157,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#button-yosoro {
+.counter {
+  width: 100%;
+}
+.yosoro-button {
+  animation: waggle ease 7s 1s infinite;
   &::before {
     content: "全速前進？";
   }
-  &:hover:not(:disabled)::before {
-    content: "ヨーソロー！";
+  &:hover:not(:disabled) {
+    animation: none;
+    &::before {
+      content: "ヨーソロー！";
+    }
   }
 }
+.yosoro-youchan {
+  font-size: 2rem;
+}
+
 .sound-button {
   position: fixed;
   top: 1rem;
   right: 1rem;
 }
+
+@keyframes waggle {
+  0% {
+    transform: none;
+  }
+  12.5% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  15% {
+    transform: rotateZ(5deg) scale(1.05);
+  }
+  16.25% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  17.5% {
+    transform: rotateZ(2deg) scale(1.05);
+  }
+  18.75% {
+    transform: rotateZ(-2deg) scale(1.05);
+  }
+  20% {
+    transform: rotateZ(0) scale(1.05);
+  }
+  25% {
+    transform: rotateZ(0) scale(1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
 </style>

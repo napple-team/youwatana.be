@@ -1,8 +1,11 @@
 <template>
   <b-container>
-    <b-row :class="$style.fillHeight" class="justify-content-center align-items-center">
+    <b-row>
       <b-col cols="12">
-        <Counter />
+        <div class="d-flex flex-column justify-content-center align-items-center fill-height">
+          <Counter />
+          <Social />
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -10,16 +13,18 @@
 
 <script>
 import Counter from '~/components/counter'
+import Social from '~/components/social'
 
 export default {
   components: {
     Counter,
+    Social
   }
 }
 </script>
 
-<style module lang="scss">
-.fillHeight {
+<style scoped lang="scss">
+.fill-height {
   min-height: 100vh;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <li>+{{count}}</li>
+  <li>(*> ᴗ •*)ゞ +{{count}}</li>
 </template>
 
 <script>

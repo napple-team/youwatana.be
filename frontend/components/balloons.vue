@@ -14,8 +14,12 @@ export default {
   },
   props: {
     buffer: {
-      type: Array,
-      default: []
+      type: Object,
+      default: (() => {})
+    },
+    identifier: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -32,6 +36,7 @@ export default {
     buffer(newValue) {
       const time = newValue['time']
       for (let [index, [identifier, count]] of Object.entries(Object.entries(newValue['buffer']))) {
+        if (identifier === this.identifier) return
         if (index > 6) retrurn
         setTimeout(() => {
           this.balloons.push({
@@ -62,13 +67,13 @@ ul > li {
   display: block;
   margin: 0 auto;
   padding: 0;
-  width: 100px;
-  height: 60px;
-  line-height: 60px;
-  font-size: 1.5rem;
+  width: 200px;
+  height: 70px;
+  line-height: 70px;
+  font-size: 1.3rem;
   color: #56c7f2;
   border: 2px solid #56c7f2;
-  border-radius: 100%;
+  border-radius: 80%;
   background-color: #fff;
 
   animation: 3s balloon-animation ease-out;

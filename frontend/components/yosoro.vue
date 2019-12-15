@@ -2,7 +2,7 @@
   <div>
     <youtube class="yosoro-player" ref="yosoroPlayer" width="0" height="0" :player-vars="playerVars" @ready="playerReady" @playing="playerPlaying" />
     <template v-if="!initialized">
-      <b-button pill variant="outline-secondary">
+      <b-button pill variant="link">
         <b-spinner variaant="primary" type="grow" small />
       </b-button>
     </template>
