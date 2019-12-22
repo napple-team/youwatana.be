@@ -36,11 +36,10 @@ export default {
     buffer(newValue) {
       const time = newValue['time']
       for (let [index, [identifier, count]] of Object.entries(Object.entries(newValue['buffer']))) {
-        if (identifier === this.identifier) return
         if (index > 6) retrurn
         setTimeout(() => {
           this.balloons.push({
-            key: `${identifier}::${time}`, identifier: identifier, count: count
+            key: `${identifier}::${time}`, identifier: identifier, count: count, isSelfCount: identifier == this.identifier
           })
         }, index * 500)
       }
@@ -100,6 +99,9 @@ ul > li {
 @keyframes balloon-animation {
   from {
     bottom: 0;
+    opacity: 1;
+  }
+  50% {
     opacity: 1;
   }
   to {
