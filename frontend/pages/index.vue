@@ -4,6 +4,7 @@
       <b-row>
         <b-col cols="12">
           <div class="d-flex flex-column justify-content-center align-items-center fill-height">
+            <h1><span class="text-you-color">you</span>watana.be</h1>
             <Counter />
             <Social />
           </div>
@@ -47,7 +48,7 @@ export default {
     display: block;
     width: 150px;
     height: 150px;
-    background-image: url("/favicon.png");
+    background-image: url("/yosoro.svg");
     background-repeat: no-repeat;
     background-size: 150px 150px;
     transform-origin: bottom center;
@@ -96,5 +97,9 @@ export default {
 
 .index-content {
   z-index: 100;
+}
+
+.text-you-color {
+  color: #56c7f2;
 }
 </style>
