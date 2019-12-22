@@ -1,5 +1,5 @@
 <template>
-  <li>(*> ᴗ •*)ゞ +{{count}}</li>
+  <li :class="isSelfCount">(*> ᴗ •*)ゞ +{{count}}</li>
 </template>
 
 <script>
@@ -19,6 +19,9 @@ export default {
     },
     count() {
       return this.balloon.count
+    },
+    isSelfCount() {
+      return this.balloon.selfCount ? 'self-count' : ''
     }
   },
   created() {

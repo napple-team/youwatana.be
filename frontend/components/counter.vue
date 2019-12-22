@@ -3,11 +3,13 @@
     <b-alert variant="danger" :show="raiseError" class="text-center">
       <p class="mb-0">予期せぬエラーが発生しました</p>
     </b-alert>
-    <div class="text-center py-5">
+    <div class="text-center py-3">
       <template v-if="disconnected">
-        <div class="d-inline-flex align-items-center">
-          <b-spinner variant="primary" />
-          <span class="ml-3">Now Youding...</span>
+        <div>
+          <div class="d-inline-flex align-items-center">
+            <b-spinner variant="primary" />
+            <span class="ml-3">Now Youding...</span>
+          </div>
         </div>
       </template>
       <template v-else>
@@ -25,8 +27,6 @@
               size="lg"
               class="yosoro-button my-3"
               @click="handleClick"
-              @mouseenter="hover = true"
-              @mouseleave="hover = false"
             >
               <span class="sr-only">(*&gt; &#7447; &bull;*)ゞ</span>
             </b-btn>
@@ -65,7 +65,6 @@ export default {
         time: 0,
         buffer: []
       },
-      hover: false,
     }
   },
   async created() {
@@ -107,9 +106,6 @@ export default {
     },
     localCount() {
       return this.count.serverSentCount + this.count.notSendCount
-    },
-    youchan() {
-      return this.hover ? '(*> ᴗ •*)ゞ' : '(*• ᴗ •*)'
     }
   },
   methods: {
@@ -130,6 +126,7 @@ export default {
       this.count.serverCount = receivedData['count']
 
       if ('buffer' in receivedData) {
+        this.$refs.soundPlayer.playSound()
         this.counterBuffer = {
           time: receivedData['time'],
           buffer: receivedData['buffer']
@@ -172,9 +169,6 @@ export default {
     }
   }
 }
-.yosoro-youchan {
-  font-size: 2rem;
-}
 
 .sound-button {
   position: fixed;
@@ -211,5 +205,4 @@ export default {
     transform: none;
   }
 }
-
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="yosoro" :class="{ 'yosoro-hover': hover }" @mouseenter="hover = true" @mouseleave="hover = false">
     <youtube class="yosoro-player" ref="yosoroPlayer" width="0" height="0" :player-vars="playerVars" @ready="playerReady" @playing="playerPlaying" />
     <template v-if="!initialized">
       <b-button pill variant="link">
@@ -7,10 +7,17 @@
       </b-button>
     </template>
     <template v-else>
-      <b-button pill variant="outline-secondary" :pressed.sync="mute">
-        <span v-if="mute">🔇</span>
-        <span v-else>🔊</span>
-      </b-button>
+      <div class="d-inline-flex justify-content-end align-items-center">
+        <div class="yosoro-youtube-from-url pr-2">
+          <a href="https://www.youtube.com/watch?v=oYk26y9lFjI">
+            音声元の YouTube を開く
+          </a>
+        </div>
+        <b-button pill variant="outline-secondary" :pressed.sync="mute">
+          <span v-if="mute">🔇</span>
+          <span v-else>🔊</span>
+        </b-button>
+      </div>
     </template>
   </div>
 </template>
@@ -35,7 +42,8 @@ export default {
         videoId: 'oYk26y9lFjI',
         startSeconds: 17.9,
         endSeconds: 19,
-      }
+      },
+      hover: false
     }
   },
   computed: {
@@ -72,3 +80,26 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.yosoro {
+  .yosoro-youtube-from-url {
+    display: none;
+  }
+}
+.yosoro-hover {
+  .yosoro-youtube-from-url {
+    display: block;
+    animation: fade-in 0.5s ease;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
