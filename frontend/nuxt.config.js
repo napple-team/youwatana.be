@@ -5,11 +5,17 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: 'youwatana.be',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' },
+      { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+      { hid: 'twitter:site', name: 'twitter:site', content: '@MITLicense' },
+      { hid: 'twitter:creator', name: 'twitter:creator', content: '@MITLicense' },
+      { hid: 'twitter:title', name: 'twitter:title', content: 'youwatana.be' },
+      { hid: 'twitter:image', name: 'twitter:image', content: 'https://youwatana.be/ogp.png' },
+      { hid: 'twitter:description', name: 'twitter:description', content: '全速前進？ヨーソロー！(*> ᴗ •*)ゞ' }
     ],
     link: [
       { rel: 'icon', type: 'image/png', href: '/favicon.png' }
