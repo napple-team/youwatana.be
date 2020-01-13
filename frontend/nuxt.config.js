@@ -14,7 +14,7 @@ module.exports = {
       { hid: 'twitter:site', name: 'twitter:site', content: '@MITLicense' },
       { hid: 'twitter:creator', name: 'twitter:creator', content: '@MITLicense' },
       { hid: 'twitter:title', name: 'twitter:title', content: 'youwatana.be' },
-      { hid: 'twitter:image', name: 'twitter:image', content: 'https://youwatana.be/ogp.png' },
+      { hid: 'twitter:image', name: 'twitter:image', content: `${ process.env.FRONTEND_URL }/ogp.png` },
       { hid: 'twitter:description', name: 'twitter:description', content: '全速前進？ヨーソロー！(*> ᴗ •*)ゞ' }
     ],
     link: [
