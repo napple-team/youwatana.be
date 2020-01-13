@@ -11,6 +11,7 @@ class CounterChannel < ApplicationCable::Channel
 
   def increment(data)
     reject unless Identifier.verified?(data['identifier'])
+    reject if data['count'] < 0
     Counter.lock! do
       Counter.increment(data['identifier'], data['count'])
     end
