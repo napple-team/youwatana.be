@@ -25,6 +25,7 @@
     "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "push-dir": "^0.4.1"
   }
 }
