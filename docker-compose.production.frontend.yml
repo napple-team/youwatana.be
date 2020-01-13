@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  frontend:
+    image: youwatana.be/frontend:production
+    container_name: youwatanabe_frontend_builder
+    env_file: .env.production
+    build:
+      context: frontend
+    command: npm run build
