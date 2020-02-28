@@ -97,7 +97,8 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
-    puma (3.12.2)
+    puma (4.3.2)
+      nio4r (~> 2.0)
     raabro (1.1.6)
     rack (2.0.8)
     rack-cors (1.1.0)
@@ -202,7 +203,7 @@ DEPENDENCIES
   hiredis
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.4.4)
-  puma (~> 3.12)
+  puma (~> 4.3)
   rack-cors
   rails (~> 6.0.2)
   redis (~> 4.0)
