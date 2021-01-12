@@ -22,7 +22,7 @@
     "gsap": "^3.0.2",
     "nuxt": "^2.10.2",
     "node-sass": "^4.13.0",
-    "sass-loader": "^8.0.0",
+    "sass-loader": "^10.1.1",
     "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
