@@ -12,7 +12,7 @@
     "publish": "push-dir --dir=dist --branch=gh-pages"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.13.0",
+    "@nuxtjs/axios": "^5.13.1",
     "actioncable": "^5.2.4",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
