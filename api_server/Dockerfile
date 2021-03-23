@@ -1,4 +1,4 @@
-FROM ruby:2.6
+FROM ruby:2.7.2
 
 ENV APP_DIR=/usr/src/app \
   STDOUT_SYNC=true
