@@ -12,17 +12,17 @@
     "publish": "push-dir --dir=dist --branch=gh-pages"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.13.1",
-    "actioncable": "^5.2.4",
+    "@nuxtjs/axios": "^5.13.4",
+    "actioncable": "^5.2.6",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
-    "gsap": "^3.6.0",
-    "nuxt": "^2.15.3",
+    "gsap": "^3.6.1",
+    "nuxt": "^2.15.6",
     "node-sass": "^5.0.0",
-    "sass-loader": "^11.0.1",
+    "sass-loader": "^10.x",
     "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
