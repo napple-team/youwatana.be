@@ -81,7 +81,7 @@ GEM
     hiredis (0.6.3)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    listen (3.4.1)
+    listen (3.5.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.9.1)
@@ -204,7 +204,7 @@ DEPENDENCIES
   byebug
   connection_pool
   hiredis
-  listen (>= 3.0.5, < 3.5)
+  listen (>= 3.0.5, < 3.6)
   mysql2 (>= 0.4.4)
   puma (~> 5.3)
   rack-cors
