@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "gsap": "^3.6.1",
     "nuxt": "^2.15.6",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.0",
     "sass-loader": "^10.x",
     "vue-youtube": "^1.4.0"
   },
