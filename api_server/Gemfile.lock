@@ -163,7 +163,7 @@ GEM
     rspec-support (3.10.2)
     rufus-scheduler (3.7.0)
       fugit (~> 1.1, >= 1.1.6)
-    sidekiq (6.2.1)
+    sidekiq (6.4.2)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
