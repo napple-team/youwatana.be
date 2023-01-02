@@ -96,11 +96,11 @@ GEM
     minitest (5.14.4)
     msgpack (1.4.2)
     mysql2 (0.5.3)
-    nio4r (2.5.7)
+    nio4r (2.5.8)
     nokogiri (1.11.5)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    puma (5.3.2)
+    puma (6.0.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.5.2)
@@ -206,7 +206,7 @@ DEPENDENCIES
   hiredis
   listen (>= 3.0.5, < 3.6)
   mysql2 (>= 0.4.4)
-  puma (~> 5.3)
+  puma (~> 6.0)
   rack-cors
   rails (~> 6.0)
   redis (~> 4.0)
